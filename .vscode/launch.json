@@ -1,0 +1,91 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot: Launch Application",
+            "request": "launch",
+            "mainClass": "edu.neu.csye7374.Driver",
+            "projectName": "CSYE7374-Design-Patterns",
+            "args": "",
+            "env": {
+                "SPRING_PROFILES_ACTIVE": "development"
+            },
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "cwd": "${workspaceFolder}",
+            "vmArgs": "-Dspring.main.web-application-type=none"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot: Debug Application",
+            "request": "launch",
+            "mainClass": "edu.neu.csye7374.Driver",
+            "projectName": "CSYE7374-Design-Patterns",
+            "args": "",
+            "env": {
+                "SPRING_PROFILES_ACTIVE": "development"
+            },
+            "console": "internalConsole",
+            "stopOnEntry": true,
+            "cwd": "${workspaceFolder}",
+            "vmArgs": "-Dspring.main.web-application-type=none -Ddebug=true"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot: Pattern Demo",
+            "request": "launch",
+            "mainClass": "edu.neu.csye7374.pattern.PatternDemo",
+            "projectName": "CSYE7374-Design-Patterns",
+            "args": "",
+            "env": {},
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot: Debug Pattern Demo",
+            "request": "launch",
+            "mainClass": "edu.neu.csye7374.pattern.PatternDemo",
+            "projectName": "CSYE7374-Design-Patterns",
+            "args": "",
+            "env": {},
+            "console": "internalConsole",
+            "stopOnEntry": true,
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot: Run from JAR",
+            "request": "launch",
+            "mainClass": "edu.neu.csye7374.Driver",
+            "projectName": "CSYE7374-Design-Patterns",
+            "args": "",
+            "env": {
+                "SPRING_PROFILES_ACTIVE": "development"
+            },
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "cwd": "${workspaceFolder}",
+            "vmArgs": "-Dspring.main.web-application-type=none -jar target/CSYE7374-Design-Patterns-1.0-SNAPSHOT.jar"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot: Database Debug",
+            "request": "launch",
+            "mainClass": "edu.neu.csye7374.Driver",
+            "projectName": "CSYE7374-Design-Patterns",
+            "args": "",
+            "env": {
+                "SPRING_PROFILES_ACTIVE": "development",
+                "LOGGING_LEVEL_ROOT": "DEBUG",
+                "LOGGING_LEVEL_EDU_NEU_CSYE7374": "DEBUG"
+            },
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "cwd": "${workspaceFolder}",
+            "vmArgs": "-Dspring.main.web-application-type=none -Dlogging.level.edu.neu.csye7374=DEBUG -Dlogging.level.org.springframework.jdbc=DEBUG"
+        }
+    ]
+} 
