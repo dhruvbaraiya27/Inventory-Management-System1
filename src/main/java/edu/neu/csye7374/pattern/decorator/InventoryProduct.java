@@ -1,4 +1,4 @@
-package com.inventory.designpattern.decorator;
+package edu.neu.csye7374.pattern.decorator;
 
 import com.inventory.InventoryCartAPI;
 
