@@ -3,6 +3,7 @@ package edu.neu.csye7374.pattern;
 import com.inventory.designpattern.command.CommandInvoker;
 import com.inventory.designpattern.command.RequestClient;
 import com.inventory.designpattern.command.ResponseServer;
+import edu.neu.csye7374.model.Customer;
 import edu.neu.csye7374.model.ItemPurchaseOrder;
 import edu.neu.csye7374.model.Item;
 import edu.neu.csye7374.pattern.decorator.InventoryDecorator;
@@ -11,12 +12,53 @@ import edu.neu.csye7374.pattern.decorator.ProductDecorator;
 import edu.neu.csye7374.pattern.facade.MessageSender;
 import edu.neu.csye7374.pattern.facade.PDFService;
 import edu.neu.csye7374.pattern.factory.CommFactory;
+import edu.neu.csye7374.pattern.observer.CustomerObserver;
+import edu.neu.csye7374.pattern.observer.Observer;
+import edu.neu.csye7374.pattern.observer.ProductNotifier;
+import edu.neu.csye7374.pattern.observer.UpdateStockDatabase;
+import edu.neu.csye7374.pattern.state.StockAlert;
+import edu.neu.csye7374.pattern.state.StockContext;
+import edu.neu.csye7374.pattern.state.StockState;
+import edu.neu.csye7374.pattern.state.StockUpdate;
+import edu.neu.csye7374.repository.CustomerRepository;
+import edu.neu.csye7374.repository.ItemRepository;
+
+import java.util.List;
 
 /**
  * Pattern Demo Class
  * Demonstrates the Command, Decorator, Facade, and Factory patterns implementation
  */
 public class PatternDemo {
+
+    // Dummy ItemRepository for testing without Hibernate
+    ItemRepository itemRepo = new ItemRepository() {
+        @Override
+        public boolean itemExists(String itemName) {
+            System.out.println("[MockRepo] Checking if item exists: " + itemName);
+            return false; // Assume item doesn't exist for demo
+        }
+
+        @Override
+        public void update(Item item) {
+            System.out.println("[MockRepo] Updating item: " + item.getItemName() + ", stock: " + item.getItemQuantity());
+        }
+
+        @Override
+        public void save(Item item) {
+            System.out.println("[MockRepo] Saving item: " + item.getItemName());
+        }
+    };
+
+    // Dummy CustomerRepository for testing without Hibernate
+    CustomerRepository customerRepo = new CustomerRepository() {
+        @Override
+        public List<Customer> getCustomers() {
+            Customer mockCustomer = new Customer();
+            mockCustomer.setCustomerOwnerName("Dhruv");
+            return List.of(mockCustomer); // Return dummy customer list
+        }
+    };
     
     public static void runCommandPatternDemo() {
         System.out.println("\n=== COMMAND PATTERN DEMO ===");
@@ -143,6 +185,82 @@ public class PatternDemo {
             e.printStackTrace();
         }
     }
+    public static void runObserverPatternDemo() {
+        System.out.println("\n=== OBSERVER PATTERN DEMO ===");
+        System.out.println("Observer Pattern: Defines a one-to-many dependency between objects...");
+
+        try {
+            // Dummy Repositories
+            CustomerRepository customerRepo = new CustomerRepository() {
+                @Override
+                public List<Customer> getCustomers() {
+                    Customer c = new Customer();
+                    c.setCustomerOwnerName("Dhruv");
+                    return List.of(c);
+                }
+            };
+
+            ItemRepository itemRepo = new ItemRepository() {
+                @Override
+                public boolean itemExists(String itemName) {
+                    return false;
+                }
+
+                @Override
+                public void save(Item item) {
+                    System.out.println("Mock save for item: " + item.getItemName());
+                }
+            };
+
+            ProductNotifier notifier = new ProductNotifier();
+            new CustomerObserver(notifier, customerRepo);
+            new UpdateStockDatabase(notifier, itemRepo);
+
+            Item newItem = new Item();
+            newItem.setItemName("Premium Bluetooth Headphones");
+
+            System.out.println("Notifying observers of new product: " + newItem.getItemName());
+            notifier.setState(newItem);
+
+        } catch (Exception e) {
+            System.err.println("Error in Observer Pattern Demo: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void runStatePatternDemo() {
+        System.out.println("\n=== STATE PATTERN DEMO ===");
+        System.out.println("State Pattern: Allows an object to alter its behavior when its internal state changes.");
+
+        try {
+            Item item = new Item();
+            item.setItemName("Wireless Mouse");
+
+            ItemRepository itemRepo = new ItemRepository() {
+                @Override
+                public void update(Item i) {
+                    System.out.println("Mock update for item: " + i.getItemName() + ", new stock: " + i.getItemQuantity());
+                }
+            };
+
+            StockContext context = new StockContext();
+
+            StockState stockUpdate = new StockUpdate(item, itemRepo);
+            StockState lowStockAlert = new StockAlert(item, itemRepo);
+
+            System.out.println("Updating inventory stock to 100...");
+            context.setState(stockUpdate);
+            context.getState().action(context, 100);
+
+            System.out.println("Simulating low stock alert...");
+            context.setState(lowStockAlert);
+            context.getState().action(context, 3);
+
+        } catch (Exception e) {
+            System.err.println("Error in State Pattern Demo: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
     
     public static void runNetworkDemo() {
         System.out.println("\n=== NETWORK COMMUNICATION DEMO ===");
@@ -176,8 +294,14 @@ public class PatternDemo {
         // Run Facade Pattern Demo
         runFacadePatternDemo();
         
-        // Run Factory Pattern Demo
-        runFactoryPatternDemo();
+            // Run Factory Pattern Demo
+            runFactoryPatternDemo();
+
+            // Run Observer Pattern Demo
+            runObserverPatternDemo();
+
+            // Run State Pattern Demo
+            runStatePatternDemo();
         
         // Run Network Demo (optional - may require network setup)
         // runNetworkDemo();
