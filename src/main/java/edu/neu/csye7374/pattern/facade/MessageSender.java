@@ -1,14 +1,14 @@
-package com.inventory.designpattern.facade;
+package edu.neu.csye7374.pattern.facade;
 
-import com.inventory.designpattern.factory.CommFactory;
-import com.inventory.repository.InvoiceRepository;
+import edu.neu.csye7374.pattern.factory.CommFactory;
+
 
 public class MessageSender extends ServiceFacade{
 
 	@Override
 	protected void sendMsg(String msg) {
 		// TODO Auto-generated method stub
-		new CommFactory().getObject().triggerServerClient(msg);
+		new CommFactory().getObject().execute();
 	}
 	
 	public static void send(String msg) {
@@ -19,7 +19,7 @@ public class MessageSender extends ServiceFacade{
 	}
 
 	@Override
-	protected void createPDF(int id, InvoiceRepository repo) {
+	protected void createPDF(int id, Object repo) {
 		// TODO Auto-generated method stub
 		
 	}

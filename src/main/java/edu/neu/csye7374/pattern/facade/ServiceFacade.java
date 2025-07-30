@@ -1,11 +1,11 @@
-package com.inventory.designpattern.facade;
+package edu.neu.csye7374.pattern.facade;
 
-import com.inventory.repository.InvoiceRepository;
+
 
 public abstract class ServiceFacade {
 
 	protected abstract void sendMsg(String msg);
 	
-	protected abstract void createPDF(int id, InvoiceRepository repo);
+	protected abstract void createPDF(int id, Object repo);
 	
 }

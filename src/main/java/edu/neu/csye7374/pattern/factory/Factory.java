@@ -1,10 +1,10 @@
-package com.inventory.designpattern.factory;
+package edu.neu.csye7374.pattern.factory;
 
-import com.inventory.designpattern.command.Communication;
+import com.inventory.designpattern.command.Command;
 
 public abstract class Factory {
 	/**
 	 * Returns an object
 	 */
-	public abstract Communication getObject();
+	public abstract Command getObject();
 }

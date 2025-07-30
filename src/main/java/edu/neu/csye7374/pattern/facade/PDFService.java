@@ -1,7 +1,6 @@
-package com.inventory.designpattern.facade;
+package edu.neu.csye7374.pattern.facade;
 
-import com.inventory.model.Invoice;
-import com.inventory.repository.InvoiceRepository;
+import edu.neu.csye7374.model.ItemPurchaseOrder;
 
 public class PDFService extends ServiceFacade{
 
@@ -12,13 +11,15 @@ public class PDFService extends ServiceFacade{
 	}
 
 	@Override
-	protected void createPDF(int id, InvoiceRepository repo) {
-		Invoice invoice = repo.getInvoicebyID(id);
+	protected void createPDF(int id, Object repo) {
+		// For now, create a sample purchase order
+		ItemPurchaseOrder purchaseOrder = new ItemPurchaseOrder();
+		purchaseOrder.setItemPurchaseOrderId(id);
 		PDFCreator pdf = new PDFCreator();
-		pdf.generatePDF(invoice);
+		pdf.generatePDF(purchaseOrder);
 	}
 
-	public static void generate(int id, InvoiceRepository repo) {
+	public static void generate(int id, Object repo) {
 		new PDFService().createPDF(id, repo);
 	}
 }

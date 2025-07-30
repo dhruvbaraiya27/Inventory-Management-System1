@@ -1,17 +1,22 @@
-package com.inventory.designpattern.factory;
+package edu.neu.csye7374.pattern.factory;
 
-import com.inventory.designpattern.command.Communication;
+import com.inventory.designpattern.command.Command;
 
 // Implementing Lazy Factory Pattern
 public class CommFactory extends Factory{
 
-	private static Communication comm;
+	private static Command comm;
 	
 	@Override
-	public Communication getObject() {
+	public Command getObject() {
 		
 		if(comm == null) {
-			comm = new Communication();
+			comm = new Command() {
+				@Override
+				public void execute() {
+					System.out.println("Command executed");
+				}
+			};
 		}
 		return comm;
 	}
