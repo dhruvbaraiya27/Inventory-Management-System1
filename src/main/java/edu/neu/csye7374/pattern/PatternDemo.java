@@ -8,10 +8,13 @@ import edu.neu.csye7374.model.Item;
 import edu.neu.csye7374.pattern.decorator.InventoryDecorator;
 import edu.neu.csye7374.pattern.decorator.InventoryProduct;
 import edu.neu.csye7374.pattern.decorator.ProductDecorator;
+import edu.neu.csye7374.pattern.facade.MessageSender;
+import edu.neu.csye7374.pattern.facade.PDFService;
+import edu.neu.csye7374.pattern.factory.CommFactory;
 
 /**
  * Pattern Demo Class
- * Demonstrates the Command and Decorator patterns implementation
+ * Demonstrates the Command, Decorator, Facade, and Factory patterns implementation
  */
 public class PatternDemo {
     
@@ -79,6 +82,68 @@ public class PatternDemo {
         }
     }
     
+    public static void runFacadePatternDemo() {
+        System.out.println("\n=== FACADE PATTERN DEMO ===");
+        System.out.println("Facade Pattern: Provides a unified interface to a set of interfaces in a subsystem.");
+        
+        try {
+            // Test Message Sender Facade
+            System.out.println("Testing Message Sender Facade...");
+            MessageSender.send("Hello from Facade Pattern Demo!");
+            
+            // Test PDF Service Facade
+            System.out.println("Testing PDF Service Facade...");
+            ItemPurchaseOrder testOrder = new ItemPurchaseOrder();
+            testOrder.setItemPurchaseOrderId(12345);
+            
+            Item testItem = new Item();
+            testItem.setItemPrice(29.99);
+            testItem.setItemName("Test Product");
+            testOrder.setItemPurchaseOrderProduct(testItem);
+            testOrder.setItemPurchaseOrderQuantity(2);
+            
+            PDFService.generate(testOrder.getItemPurchaseOrderId(), testOrder);
+            System.out.println("PDF generated successfully for order ID: " + testOrder.getItemPurchaseOrderId());
+            
+            System.out.println("Facade Pattern Demo completed successfully!");
+            
+        } catch (Exception e) {
+            System.err.println("Error in Facade Pattern Demo: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    public static void runFactoryPatternDemo() {
+        System.out.println("\n=== FACTORY PATTERN DEMO ===");
+        System.out.println("Factory Pattern: Creates objects without specifying the exact class of object that will be created.");
+        
+        try {
+            // Test Factory Pattern with CommFactory
+            System.out.println("Testing Factory Pattern with CommFactory...");
+            
+            CommFactory factory = new CommFactory();
+            
+            // Get first object (should create new instance)
+            System.out.println("Creating first command object...");
+            var command1 = factory.getObject();
+            command1.execute();
+            
+            // Get second object (should return same instance due to lazy singleton)
+            System.out.println("Creating second command object...");
+            var command2 = factory.getObject();
+            command2.execute();
+            
+            // Verify if it's the same instance
+            System.out.println("Are both objects the same instance? " + (command1 == command2));
+            
+            System.out.println("Factory Pattern Demo completed successfully!");
+            
+        } catch (Exception e) {
+            System.err.println("Error in Factory Pattern Demo: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
     public static void runNetworkDemo() {
         System.out.println("\n=== NETWORK COMMUNICATION DEMO ===");
         System.out.println("Demonstrating network communication using Command Pattern");
@@ -100,13 +165,19 @@ public class PatternDemo {
     
     public static void runCompleteDemo() {
         System.out.println("============ PATTERN DEMO START ============");
-        System.out.println("This demo showcases the Command and Decorator patterns implementation");
+        System.out.println("This demo showcases the Command, Decorator, Facade, and Factory patterns implementation");
         
         // Run Command Pattern Demo
         runCommandPatternDemo();
         
         // Run Decorator Pattern Demo
         runDecoratorPatternDemo();
+        
+        // Run Facade Pattern Demo
+        runFacadePatternDemo();
+        
+        // Run Factory Pattern Demo
+        runFactoryPatternDemo();
         
         // Run Network Demo (optional - may require network setup)
         // runNetworkDemo();
