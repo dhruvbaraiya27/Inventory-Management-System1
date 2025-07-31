@@ -1,11 +1,12 @@
 package edu.neu.csye7374.pattern;
 
-import com.inventory.designpattern.command.CommandInvoker;
-import com.inventory.designpattern.command.RequestClient;
-import com.inventory.designpattern.command.ResponseServer;
 import edu.neu.csye7374.model.Customer;
 import edu.neu.csye7374.model.ItemPurchaseOrder;
 import edu.neu.csye7374.model.Item;
+import edu.neu.csye7374.pattern.command.Command;
+import edu.neu.csye7374.pattern.command.CommandInvoker;
+import edu.neu.csye7374.pattern.command.RequestClient;
+import edu.neu.csye7374.pattern.command.ResponseServer;
 import edu.neu.csye7374.pattern.decorator.InventoryDecorator;
 import edu.neu.csye7374.pattern.decorator.InventoryProduct;
 import edu.neu.csye7374.pattern.decorator.ProductDecorator;
@@ -167,13 +168,19 @@ public class PatternDemo {
             
             // Get first object (should create new instance)
             System.out.println("Creating first command object...");
-            var command1 = factory.getObject();
-            command1.execute();
+            Object command1 = factory.getObject();
+            if (command1 instanceof Command) {
+                ((Command) command1).execute();
+            }
             
             // Get second object (should return same instance due to lazy singleton)
             System.out.println("Creating second command object...");
-            var command2 = factory.getObject();
-            command2.execute();
+            Object command2 = factory.getObject();
+            if(command2 instanceof Command) {
+                ((Command) command2).execute();
+
+            }
+
             
             // Verify if it's the same instance
             System.out.println("Are both objects the same instance? " + (command1 == command2));

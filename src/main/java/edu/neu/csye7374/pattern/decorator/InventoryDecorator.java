@@ -1,7 +1,5 @@
 package edu.neu.csye7374.pattern.decorator;
 
-import com.inventory.InventoryCartAPI;
-
 public class InventoryDecorator implements InventoryCartAPI{
 	
 	InventoryCartAPI decoratedCart;
@@ -15,4 +13,4 @@ public class InventoryDecorator implements InventoryCartAPI{
 		return this.decoratedCart.getCost();
 	}
 
-} 
+}
