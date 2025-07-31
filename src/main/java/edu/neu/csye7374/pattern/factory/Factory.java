@@ -1,10 +1,11 @@
 package edu.neu.csye7374.pattern.factory;
 
-import com.inventory.designpattern.command.Command;
+import edu.neu.csye7374.pattern.command.Command;
+import edu.neu.csye7374.pattern.command.CommandInvoker;
 
 public abstract class Factory {
 	/**
 	 * Returns an object
 	 */
-	public abstract Command getObject();
+	public abstract CommandInvoker getObject();
 }

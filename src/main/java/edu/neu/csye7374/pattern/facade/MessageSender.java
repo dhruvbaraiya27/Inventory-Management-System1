@@ -8,7 +8,7 @@ public class MessageSender extends ServiceFacade{
 	@Override
 	protected void sendMsg(String msg) {
 		// TODO Auto-generated method stub
-		new CommFactory().getObject().execute();
+		new CommFactory().getObject().triggerServerClient(msg);
 	}
 	
 	public static void send(String msg) {

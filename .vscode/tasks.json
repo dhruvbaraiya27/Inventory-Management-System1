@@ -1,0 +1,153 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Maven Clean",
+            "type": "shell",
+            "command": "mvn",
+            "args": ["clean"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Maven Compile",
+            "type": "shell",
+            "command": "mvn",
+            "args": ["compile"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Maven Package",
+            "type": "shell",
+            "command": "mvn",
+            "args": ["package"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Maven Test",
+            "type": "shell",
+            "command": "mvn",
+            "args": ["test"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Driver Application",
+            "type": "shell",
+            "command": "mvn",
+            "args": ["exec:java", "-Dexec.mainClass=edu.neu.csye7374.Driver"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Pattern Demo",
+            "type": "shell",
+            "command": "mvn",
+            "args": ["exec:java", "-Dexec.mainClass=edu.neu.csye7374.pattern.PatternDemo"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run from JAR",
+            "type": "shell",
+            "command": "java",
+            "args": ["-jar", "target/CSYE7374-Design-Patterns-1.0-SNAPSHOT.jar", "--spring.main.web-application-type=none"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Quick Run (No Clean)",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Maven Compile",
+                "Run Driver Application"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Quick Pattern Demo",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Maven Compile",
+                "Run Pattern Demo"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Full Build and Run",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Maven Clean",
+                "Maven Compile",
+                "Maven Package",
+                "Run Driver Application"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
+} 

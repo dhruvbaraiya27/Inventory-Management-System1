@@ -1,5 +1,4 @@
-package com.inventory.designpattern.command;
-
+package edu.neu.csye7374.pattern.command;
 import java.io.IOException;
 
 
