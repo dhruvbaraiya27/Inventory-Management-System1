@@ -1,114 +1,64 @@
 package edu.neu.csye7374.config;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Properties;
 
-/**
- * Database Configuration class for MySQL connection
- * Manages database connectivity for the Inventory Management system
- */
+import javax.sql.DataSource;
+
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+
+@PropertySource(value = { "classpath:application.properties" })
+@Configuration
 public class DBConfig {
-    
-    private static final String PROPERTIES_FILE = "application.properties";
-    private static Properties properties;
-    private static DBConfig instance;
-    
-    // Database connection properties
-    private String url;
-    private String username;
-    private String password;
-    private String driver;
-    
-    /**
-     * Private constructor for Singleton pattern
-     */
-    private DBConfig() {
-        loadProperties();
-        initializeConnectionProperties();
-    }
-    
-    /**
-     * Get singleton instance of DBConfig
-     * @return DBConfig instance
-     */
-    public static synchronized DBConfig getInstance() {
-        if (instance == null) {
-            instance = new DBConfig();
-        }
-        return instance;
-    }
-    
-    /**
-     * Load properties from application.properties file
-     */
-    private void loadProperties() {
-        properties = new Properties();
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE)) {
-            if (input == null) {
-                throw new RuntimeException("Unable to find " + PROPERTIES_FILE);
-            }
-            properties.load(input);
-        } catch (IOException e) {
-            throw new RuntimeException("Error loading properties file: " + e.getMessage(), e);
-        }
-    }
-    
-    /**
-     * Initialize database connection properties from loaded properties
-     */
-    private void initializeConnectionProperties() {
-        this.url = properties.getProperty("db.url");
-        this.username = properties.getProperty("db.username");
-        this.password = properties.getProperty("db.password");
-        this.driver = properties.getProperty("db.driver");
-        
-        // Validate required properties
-        if (url == null || username == null || password == null || driver == null) {
-            throw new RuntimeException("Missing required database properties in " + PROPERTIES_FILE);
-        }
-    }
-    
-    /**
-     * Get database connection
-     * @return Connection object
-     * @throws SQLException if connection fails
-     */
-    public Connection getConnection() throws SQLException {
-        try {
-            Class.forName(driver);
-            return DriverManager.getConnection(url, username, password);
-        } catch (ClassNotFoundException e) {
-            throw new SQLException("Database driver not found: " + driver, e);
-        }
-    }
-    
-    /**
-     * Test database connection
-     * @return true if connection is successful, false otherwise
-     */
-    public boolean testConnection() {
-        try (Connection connection = getConnection()) {
-            return connection != null && !connection.isClosed();
-        } catch (SQLException e) {
-            System.err.println("Database connection test failed: " + e.getMessage());
-            return false;
-        }
-    }
-    
-    // Getters for connection properties
-    public String getUrl() {
-        return url;
-    }
-    
-    public String getUsername() {
-        return username;
-    }
-    
-    public String getDriver() {
-        return driver;
-    }
+	
+	@Value("${jdbc.driverClassName}")
+	private String driverClass;
+	@Value("${jdbc.url}")
+	private String url;
+	@Value("${jdbc.username}")
+	private String username;
+	@Value("${jdbc.password}")
+	private String password;
+	@Value("${hibernate.dialect}")
+	private String dialect;
+
+	private Properties hibernateProperties() {
+		Properties properties = new Properties();
+		properties.put("hibernate.dialect", dialect);
+		properties.put("hibernate.hbm2ddl.auto", "update");
+		properties.put("hibernate.show_sql", "true");
+		properties.put("hibernate.format_sql", "true");
+		return properties;
+	}
+
+	@Bean
+	public DataSource getDataSource() {
+		DriverManagerDataSource dataSource = new DriverManagerDataSource(url, username, password);
+		dataSource.setDriverClassName(driverClass);
+		return dataSource;
+	}
+
+	@Bean
+	public LocalSessionFactoryBean sessionFactory() {
+		LocalSessionFactoryBean factory = new LocalSessionFactoryBean();
+		factory.setDataSource(getDataSource());
+		factory.setHibernateProperties(hibernateProperties());
+		factory.setPackagesToScan(new String[] { "edu.neu.csye7374.model" });
+		return factory;
+	}
+
+	@Bean
+	@Autowired
+	public HibernateTransactionManager transactionManager(SessionFactory factory) {
+		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+		transactionManager.setSessionFactory(factory);
+		return transactionManager;
+	}
 }

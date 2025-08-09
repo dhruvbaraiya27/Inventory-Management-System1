@@ -9,43 +9,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import edu.neu.csye7374.model.PurchaseOrder;
+import edu.neu.csye7374.model.Invoice;
+
 
 @Repository
 @Transactional
-public class OrderRepository {
+public class InvoiceRepository {
 
 	@Autowired
 	private SessionFactory factory;
 	//C
-	public int save(PurchaseOrder purchaseOrder) {
-		int id = (int) getSession().save(purchaseOrder);
+	public int save(Invoice invoice) {
+		int id = (int) getSession().save(invoice);
 		return id;
 	}
 	//R
-	public List<PurchaseOrder> getPurchaseOrders() {
-		String hql = "FROM PurchaseOrder";
+	public List<Invoice> getInvoices() {
+		String hql = "FROM Invoice";
         Query query = getSession().createQuery(hql);
-        List<PurchaseOrder> results = query.list();
+        List<Invoice> results = query.list();
         return results;
 	}
 	
 	//R by ID
-	public PurchaseOrder getPurchaseOrderbyID(int id) {
-		PurchaseOrder purchaseOrder = getSession().get(PurchaseOrder.class, id);
-        return purchaseOrder;
+	public Invoice getInvoicebyID(int id) {
+		Invoice invoice = getSession().get(Invoice.class, id);
+        return invoice;
     }
 	
 	//U
-	public void update(PurchaseOrder purchaseOrder) {
-		getSession().update(purchaseOrder);
+	public void update(Invoice invoice) {
+		getSession().update(invoice);
 		getSession().flush();
 	}
 	//D
-	public void delete(PurchaseOrder purchaseOrder) {
-		getSession().delete(purchaseOrder);
+	public void delete(Invoice invoice) {
+		getSession().delete(invoice);
 		getSession().flush();
 	}
+	
 	
 	private Session getSession() {
 		Session session = factory.getCurrentSession();

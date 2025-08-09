@@ -9,41 +9,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import edu.neu.csye7374.model.PurchaseOrder;
+import edu.neu.csye7374.model.ProductPO;
 
 @Repository
 @Transactional
-public class OrderRepository {
+public class ProductPORepository {
 
 	@Autowired
 	private SessionFactory factory;
+	
 	//C
-	public int save(PurchaseOrder purchaseOrder) {
-		int id = (int) getSession().save(purchaseOrder);
-		return id;
+	public void save(ProductPO productPO) {
+		getSession().save(productPO);
 	}
 	//R
-	public List<PurchaseOrder> getPurchaseOrders() {
-		String hql = "FROM PurchaseOrder";
+	public List<ProductPO> getProductPOs() {
+		String hql = "FROM ProductPO";
         Query query = getSession().createQuery(hql);
-        List<PurchaseOrder> results = query.list();
+        List<ProductPO> results = query.list();
         return results;
 	}
 	
 	//R by ID
-	public PurchaseOrder getPurchaseOrderbyID(int id) {
-		PurchaseOrder purchaseOrder = getSession().get(PurchaseOrder.class, id);
-        return purchaseOrder;
+	public ProductPO getProductPObyID(int id) {
+		ProductPO productPO = getSession().get(ProductPO.class, id);
+        return productPO;
     }
 	
 	//U
-	public void update(PurchaseOrder purchaseOrder) {
-		getSession().update(purchaseOrder);
+	public void update(ProductPO productPO) {
+		getSession().update(productPO);
 		getSession().flush();
 	}
 	//D
-	public void delete(PurchaseOrder purchaseOrder) {
-		getSession().delete(purchaseOrder);
+	public void delete(ProductPO productPO) {
+		getSession().delete(productPO);
 		getSession().flush();
 	}
 	
