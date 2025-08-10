@@ -16,18 +16,21 @@ public class createPDF {
 	
 	private Invoice invoice;
 	
-	public void generatePDF(Invoice invoice) {
+	public String generatePDF(Invoice invoice) {
 		this.invoice = invoice;
 		Document document = new Document();
+		String filename = null;
 		try {
-			String filename = "Invoice_" + invoice.getId() + "_" + invoice.getPurchaseOrder().getBuyer().getCompanyName() + ".pdf";
+			filename = "Invoice_" + invoice.getId() + "_" + invoice.getPurchaseOrder().getBuyer().getCompanyName() + ".pdf";
 			PdfWriter.getInstance(document, new FileOutputStream(filename));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		} catch (DocumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
 
 		document.open();
@@ -49,6 +52,7 @@ public class createPDF {
 			e.printStackTrace();
 		}
 		document.close();
+		return filename;
 	}
 	
 	private void addTableHeader(PdfPTable table) {
@@ -62,21 +66,47 @@ public class createPDF {
 	}
 
 	private void addRows(PdfPTable table) {
-		
-		List<ProductPO> productPOs = invoice.getPurchaseOrder().getProducts();
-
-		List<ProductPO> distinctProductList = productPOs.stream().distinct().collect(Collectors.toList());
-		for(ProductPO productPO : distinctProductList) {
-			table.addCell(productPO.getProduct().getProductName());
-			table.addCell(String.valueOf(productPO.getQuantity()));
-			table.addCell("$" + productPO.getProduct().getPrice());
-			double result = productPO.getProduct().getPrice() * productPO.getQuantity();
-			table.addCell("$" + result);
+		try {
+			List<ProductPO> productPOs = invoice.getPurchaseOrder().getProducts();
+			
+			System.out.println("DEBUG: Number of products in invoice: " + (productPOs != null ? productPOs.size() : "null"));
+			
+			if (productPOs != null && !productPOs.isEmpty()) {
+				List<ProductPO> distinctProductList = productPOs.stream().distinct().collect(Collectors.toList());
+				
+				for(ProductPO productPO : distinctProductList) {
+					if (productPO != null && productPO.getProduct() != null) {
+						table.addCell(productPO.getProduct().getProductName());
+						table.addCell(String.valueOf(productPO.getQuantity()));
+						table.addCell("$" + String.format("%.2f", productPO.getProduct().getPrice()));
+						double result = productPO.getProduct().getPrice() * productPO.getQuantity();
+						table.addCell("$" + String.format("%.2f", result));
+					}
+				}
+			} else {
+				// Add a row indicating no products found
+				table.addCell("No products found");
+				table.addCell("0");
+				table.addCell("$0.00");
+				table.addCell("$0.00");
+			}
+			
+			// Add total row
+			table.addCell("Total");
+			table.addCell("---");
+			table.addCell("---");
+			double totalAmount = invoice.getPurchaseOrder().getTotalAmount();
+			table.addCell("$" + String.format("%.2f", totalAmount));
+			
+		} catch (Exception e) {
+			System.out.println("ERROR in addRows: " + e.getMessage());
+			e.printStackTrace();
+			
+			// Add error row
+			table.addCell("Error loading products");
+			table.addCell("--");
+			table.addCell("--");
+			table.addCell("--");
 		}
-		
-		table.addCell("Total");
-		table.addCell("---");
-		table.addCell("---");
-		table.addCell("$" + invoice.getPurchaseOrder().getTotalAmount());
 	}
 }

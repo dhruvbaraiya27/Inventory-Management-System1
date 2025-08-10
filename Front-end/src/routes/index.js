@@ -1,5 +1,6 @@
 export const URLS = {
     VERIFY_USER: '/api/employee/login',
+    REGISTER_USER: '/api/employee/register',
     GET_ALL_PRODUCTS: '/api/product/getAll',
     ADD_PRODUCT: '/api/product/save',
     EDIT_PRODUCT: '/api/product/update',
@@ -25,5 +26,10 @@ export const URLS = {
     DELETE_PURCHASE_ORDER: '/api/purchaseOrder/delete/',
 
     GET_ALL_INVOICE: '/api/invoice/getAll',
-    GENERATE_INVOICE : '/api/invoice/generateInvoice/'
+    GENERATE_INVOICE : '/api/invoice/generateInvoice/',
+    CHECK_PDF_EXISTS: '/api/invoice/hasPdf/',
+    VIEW_INVOICE_PDF: '/api/invoice/viewPdf/',
+
+    GET_DASHBOARD_STATS: '/api/dashboard/stats',
+    GET_RECENT_ACTIVITY: '/api/dashboard/recent-activity'
 }

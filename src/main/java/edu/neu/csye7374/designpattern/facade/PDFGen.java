@@ -15,7 +15,13 @@ public class PDFGen extends Facade{
 	protected void pdfGen(int invoiceID, InvoiceRepository invoiceRepo) {
 		Invoice insertedInvoice = invoiceRepo.getInvoicebyID(invoiceID);
 		createPDF pdf = new createPDF();
-		pdf.generatePDF(insertedInvoice);
+		String pdfFilePath = pdf.generatePDF(insertedInvoice);
+		
+		// Update the invoice with the PDF file path
+		if (pdfFilePath != null) {
+			insertedInvoice.setPdfFilePath(pdfFilePath);
+			invoiceRepo.update(insertedInvoice);
+		}
 	}
 
 	public static void pdfGenerator(int invoiceID, InvoiceRepository invoiceRepo) {

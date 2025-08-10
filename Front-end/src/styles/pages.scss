@@ -997,3 +997,174 @@
     padding: 20px;
   }
 }
+
+// View Invoice Button Styles
+.action-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .view-invoice-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+
+    &:hover {
+      background: linear-gradient(135deg, #4338ca, #6d28d9);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+    }
+
+    svg {
+      font-size: 16px;
+    }
+
+    span {
+      font-size: 13px;
+    }
+  }
+
+  .no-pdf-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #6b7280;
+    font-size: 13px;
+    font-style: italic;
+
+    svg {
+      font-size: 14px;
+    }
+  }
+}
+
+// Responsive styles for view invoice button
+@media (max-width: 768px) {
+  .action-cell {
+    .view-invoice-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+      
+      span {
+        display: none; // Hide text on mobile, show only icon
+      }
+      
+      svg {
+        font-size: 18px;
+      }
+    }
+    
+    .no-pdf-text {
+      font-size: 11px;
+      
+      span {
+        display: none; // Hide text on mobile
+      }
+    }
+  }
+}
+
+// Dashboard specific styles
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+
+  .section-title {
+    margin: 0;
+  }
+
+  .refresh-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    svg {
+      font-size: 16px;
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #6b7280;
+
+  svg {
+    margin-bottom: 16px;
+    color: #6366f1;
+  }
+
+  p, span {
+    font-size: 14px;
+    margin: 0;
+  }
+}
+
+.no-activity {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+
+  p {
+    margin: 0;
+    font-style: italic;
+  }
+}
+
+// Responsive adjustments for dashboard
+@media (max-width: 768px) {
+  .section-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+
+    .refresh-btn {
+      justify-content: center;
+    }
+  }
+
+  .loading-container {
+    padding: 20px;
+  }
+}
