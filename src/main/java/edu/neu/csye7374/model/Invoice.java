@@ -11,13 +11,16 @@ public class Invoice {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "purchaseOrder_id")
 	@JsonManagedReference
 	private PurchaseOrder purchaseOrder;
 
 	@Column(nullable = false)
 	private String paymentDate;
+	
+	@Column
+	private String pdfFilePath;
 
 	public int getId() {
 		return id;
@@ -41,5 +44,13 @@ public class Invoice {
 
 	public void setPaymentDate(String paymentDate) {
 		this.paymentDate = paymentDate;
+	}
+
+	public String getPdfFilePath() {
+		return pdfFilePath;
+	}
+
+	public void setPdfFilePath(String pdfFilePath) {
+		this.pdfFilePath = pdfFilePath;
 	}
 }

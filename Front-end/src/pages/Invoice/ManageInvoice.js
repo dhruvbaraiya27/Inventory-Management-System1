@@ -9,7 +9,9 @@ import {
   faCalendarAlt,
   faBuilding,
   faDollarSign,
-  faBox
+  faBox,
+  faEye,
+  faFilePdf
 } from "@fortawesome/free-solid-svg-icons";
 import Tables from "../../components/Tables";
 import "../../styles/pages.scss";
@@ -18,6 +20,7 @@ function ManageInvoice() {
   const [invoices, setInvoices] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [pdfAvailability, setPdfAvailability] = useState({});
 
   useEffect(() => {
     let isActive = true;
@@ -37,6 +40,7 @@ function ManageInvoice() {
       .get(url)
       .then(function (response) {
         setInvoices(response.data);
+        checkPdfAvailability(response.data);
         setIsLoading(false);
       })
       .catch(function (error) {
@@ -44,6 +48,21 @@ function ManageInvoice() {
         setIsLoading(false);
         displayToast({ type: "error", msg: "Oops! Something went wrong" });
       });
+  };
+
+  // Check PDF availability for each invoice
+  const checkPdfAvailability = async (invoiceList) => {
+    const pdfChecks = {};
+    for (const invoice of invoiceList) {
+      try {
+        const response = await axios.get(`${URLS.CHECK_PDF_EXISTS}${invoice.id}`);
+        pdfChecks[invoice.id] = response.data;
+      } catch (error) {
+        console.log(`Error checking PDF for invoice ${invoice.id}:`, error);
+        pdfChecks[invoice.id] = false;
+      }
+    }
+    setPdfAvailability(pdfChecks);
   };
 
   // Filter invoices based on search term
@@ -75,6 +94,13 @@ function ManageInvoice() {
     });
   };
 
+  // Handle viewing PDF
+  const handleViewPdf = (invoiceId) => {
+    // Use the proxy URL format for consistency
+    const pdfUrl = `http://localhost:3000${URLS.VIEW_INVOICE_PDF}${invoiceId}`;
+    window.open(pdfUrl, '_blank');
+  };
+
   // Prepare table headers
   const tableHeaders = [
     { key: "srNo", label: "Sr. No." },
@@ -82,7 +108,8 @@ function ManageInvoice() {
     { key: "totalProducts", label: "Total Products" },
     { key: "totalQuantity", label: "Total Quantity" },
     { key: "totalPrice", label: "Total Price" },
-    { key: "paymentDate", label: "Payment Date" }
+    { key: "paymentDate", label: "Payment Date" },
+    { key: "viewInvoice", label: "View Invoice" }
   ];
 
   // Prepare table data
@@ -118,6 +145,25 @@ function ManageInvoice() {
         <div className="date-cell">
           <FontAwesomeIcon icon={faCalendarAlt} />
           <span>{formatDate(paymentDate)}</span>
+        </div>
+      ),
+      viewInvoice: (
+        <div className="action-cell">
+          {pdfAvailability[id] ? (
+            <button 
+              className="view-invoice-btn"
+              onClick={() => handleViewPdf(id)}
+              title="View Invoice PDF"
+            >
+              <FontAwesomeIcon icon={faFilePdf} />
+              <span>View Invoice</span>
+            </button>
+          ) : (
+            <span className="no-pdf-text">
+              <FontAwesomeIcon icon={faEye} />
+              PDF Not Available
+            </span>
+          )}
         </div>
       )
     };

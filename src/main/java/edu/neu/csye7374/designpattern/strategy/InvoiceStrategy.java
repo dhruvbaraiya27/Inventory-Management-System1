@@ -37,6 +37,10 @@ public class InvoiceStrategy implements StrategyAPI{
 	@Override
 	public void add() {
 		PurchaseOrder po = orderRepo.getPurchaseOrderbyID(id);
+		if (po == null) {
+			throw new RuntimeException("Purchase Order with ID " + id + " not found");
+		}
+		
 		po.setPaid(true);
 		orderRepo.update(po);
 		

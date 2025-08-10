@@ -1,4 +1,4 @@
-import React, { useReducer, useContext } from "react";
+import React, { useReducer, useContext, useState } from "react";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import "../styles/Login.scss";
 import displayToast from "../utils/displayToast";
@@ -7,6 +7,7 @@ import axios from "axios";
 import { URLS } from "../routes";
 import { useHistory } from "react-router";
 import { AuthContext } from "../context/Auth";
+import Register from "./Register";
 
 const initialState = {
   userName: "",
@@ -38,6 +39,7 @@ function Login() {
   const { userData, setUserData, isLoggedIn } = useContext(AuthContext);
 
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [showRegister, setShowRegister] = useState(false);
   const history = useHistory();
 
   const handleUserNameChange = (event) => {
@@ -102,6 +104,12 @@ function Login() {
     });
   };
 
+  // If showing register component
+  if (showRegister) {
+    return <Register onSwitchToLogin={() => setShowRegister(false)} />;
+  }
+
+  // Default login component
   return (
     <div className="login-container">
       <div className="login-card">
@@ -141,7 +149,16 @@ function Login() {
         </Form>
         
         <div className="login-footer">
-          <p>Secure access to your inventory dashboard</p>
+          <p>
+            Don't have an account?{" "}
+            <button 
+              type="button" 
+              className="link-button" 
+              onClick={() => setShowRegister(true)}
+            >
+              Create Account
+            </button>
+          </p>
         </div>
       </div>
     </div>

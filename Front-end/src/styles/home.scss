@@ -275,3 +275,82 @@
     font-size: 28px;
   }
 }
+
+// Home dashboard specific styles
+.dashboard-header {
+  position: relative;
+  
+  .refresh-btn-home {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #5a6fd8, #6b42c4);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    svg {
+      font-size: 16px;
+    }
+  }
+}
+
+.loading-container-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: #6b7280;
+  
+  svg {
+    margin-bottom: 20px;
+    color: #667eea;
+  }
+
+  p {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+  }
+}
+
+// Responsive adjustments for home dashboard
+@media (max-width: 768px) {
+  .dashboard-header {
+    .refresh-btn-home {
+      position: static;
+      margin-top: 20px;
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .loading-container-home {
+    min-height: 300px;
+    
+    p {
+      font-size: 16px;
+    }
+  }
+}

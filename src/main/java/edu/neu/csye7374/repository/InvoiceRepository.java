@@ -25,16 +25,70 @@ public class InvoiceRepository {
 	}
 	//R
 	public List<Invoice> getInvoices() {
-		String hql = "FROM Invoice";
-        Query query = getSession().createQuery(hql);
-        List<Invoice> results = query.list();
-        return results;
+		try {
+			String hql = "SELECT DISTINCT i FROM Invoice i LEFT JOIN FETCH i.purchaseOrder po WHERE po IS NOT NULL";
+			Query<Invoice> query = getSession().createQuery(hql, Invoice.class);
+			List<Invoice> results = query.list();
+			return results;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Error fetching invoices: " + e.getMessage());
+			// Fallback: try to get invoices without join
+			try {
+				String fallbackHql = "FROM Invoice";
+				Query<Invoice> fallbackQuery = getSession().createQuery(fallbackHql, Invoice.class);
+				List<Invoice> fallbackResults = fallbackQuery.list();
+				// Filter out invoices with null purchase orders
+				return fallbackResults.stream()
+					.filter(inv -> {
+						try {
+							return inv.getPurchaseOrder() != null;
+						} catch (Exception ex) {
+							return false;
+						}
+					})
+					.collect(java.util.stream.Collectors.toList());
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				return new java.util.ArrayList<>();
+			}
+		}
 	}
 	
 	//R by ID
 	public Invoice getInvoicebyID(int id) {
-		Invoice invoice = getSession().get(Invoice.class, id);
-        return invoice;
+		try {
+			String hql = "SELECT DISTINCT i FROM Invoice i " +
+						"LEFT JOIN FETCH i.purchaseOrder po " +
+						"LEFT JOIN FETCH po.products p " +
+						"LEFT JOIN FETCH p.product " +
+						"LEFT JOIN FETCH po.buyer " +
+						"WHERE i.id = :id";
+			Query<Invoice> query = getSession().createQuery(hql, Invoice.class);
+			query.setParameter("id", id);
+			Invoice invoice = query.uniqueResult();
+			
+			// Debug logging
+			if (invoice != null) {
+				System.out.println("DEBUG: Found invoice " + invoice.getId());
+				if (invoice.getPurchaseOrder() != null) {
+					System.out.println("DEBUG: Purchase order found, ID: " + invoice.getPurchaseOrder().getId());
+					if (invoice.getPurchaseOrder().getProducts() != null) {
+						System.out.println("DEBUG: Products count: " + invoice.getPurchaseOrder().getProducts().size());
+					} else {
+						System.out.println("DEBUG: Products list is null");
+					}
+				} else {
+					System.out.println("DEBUG: Purchase order is null");
+				}
+			}
+			
+			return invoice;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Error fetching invoice by ID: " + e.getMessage());
+			return null;
+		}
     }
 	
 	//U
@@ -46,6 +100,19 @@ public class InvoiceRepository {
 	public void delete(Invoice invoice) {
 		getSession().delete(invoice);
 		getSession().flush();
+	}
+	
+	// Clean up orphaned invoice records
+	public void cleanupOrphanedInvoices() {
+		try {
+			String hql = "DELETE FROM Invoice i WHERE i.purchaseOrder IS NULL";
+			Query<?> query = getSession().createQuery(hql);
+			int deletedCount = query.executeUpdate();
+			System.out.println("Cleaned up " + deletedCount + " orphaned invoice records");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Error cleaning up orphaned invoices: " + e.getMessage());
+		}
 	}
 	
 	

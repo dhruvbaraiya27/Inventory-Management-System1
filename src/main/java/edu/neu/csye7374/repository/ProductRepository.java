@@ -24,16 +24,29 @@ public class ProductRepository {
 	}
 	//R
 	public List<Product> getProducts() {
-		String hql = "FROM Product";
-        Query query = getSession().createQuery(hql);
-        List<Product> results = query.list();
-        return results;
+		try {
+			String hql = "SELECT DISTINCT p FROM Product p";
+			Query<Product> query = getSession().createQuery(hql, Product.class);
+			List<Product> results = query.list();
+			return results;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Error fetching products: " + e.getMessage());
+			// Return empty list if there's an error
+			return new java.util.ArrayList<>();
+		}
 	}
 	
 	//R by ID
 	public Product getProductbyID(int id) {
-		Product product = getSession().get(Product.class, id);
-        return product;
+		try {
+			Product product = getSession().get(Product.class, id);
+			return product;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Error fetching product by ID: " + e.getMessage());
+			return null;
+		}
     }
 	
 	//U
@@ -48,15 +61,31 @@ public class ProductRepository {
 	}
 	
 	public boolean productExists(String productName) {
-        String hql = "FROM Product WHERE productName = :productName";        
-        Query query = getSession().createQuery(hql);
-        query.setParameter("productName", productName);
-        Product p = (Product) query.uniqueResult();
-        if(p != null) 
-        	return true;
-        else
-        	return false;
+		try {
+			String hql = "FROM Product WHERE productName = :productName";        
+			Query<Product> query = getSession().createQuery(hql, Product.class);
+			query.setParameter("productName", productName);
+			Product p = query.uniqueResult();
+			return p != null;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Error checking if product exists: " + e.getMessage());
+			return false;
+		}
     }
+	
+	// Clean up orphaned ProductPO records that reference non-existent products
+	public void cleanupOrphanedProductPO() {
+		try {
+			String hql = "DELETE FROM ProductPO p WHERE p.product IS NULL OR p.product.id NOT IN (SELECT pr.id FROM Product pr)";
+			Query<?> query = getSession().createQuery(hql);
+			int deletedCount = query.executeUpdate();
+			System.out.println("Cleaned up " + deletedCount + " orphaned ProductPO records");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Error cleaning up orphaned ProductPO records: " + e.getMessage());
+		}
+	}
 	
 	private Session getSession() {
 		Session session = factory.getCurrentSession();
