@@ -35,9 +35,10 @@ public class ServerClient {
 			recieve = new byte[10000];
 			
 		}
-	ds.disconnect();
-	ds.close();
-	ds.setSoTimeout(10);
+		// Set timeout before closing the socket
+		ds.setSoTimeout(10);
+		ds.disconnect();
+		ds.close();
 	}
 	
 	private static StringBuilder data(byte[] a) {
